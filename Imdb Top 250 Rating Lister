@@ -1,0 +1,26 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://www.imdb.com/chart/top"
+response = requests.get(url)
+
+html1 = response.content
+soup = BeautifulSoup(html1, "html.parser")
+
+try:
+    userInput = float(input("Lowest Rating Point: "))
+except:
+    userInput = int(input("Lowest Rating Point: "))
+
+headers = soup.find_all("td", {"class":"titleColumn"})
+ratings = soup.find_all("td",{"class":"ratingColumn imdbRating"})
+
+for h, r in zip(headers, ratings):
+    h = h.text.strip()
+    h = h.replace("\n", "")
+    r = r.text.strip()
+    r = r.replace("\n", "")
+
+    if float(r) > userInput:
+        print("Movie ", h, "Rating ", r)
+
